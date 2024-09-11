@@ -17,3 +17,6 @@ export default {
     tabIconSelected: tintColorDark,
   },
 };
+
+
+export const tint = '#2f95dc'
