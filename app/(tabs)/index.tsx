@@ -40,8 +40,8 @@ export default function TabOneScreen() {
     })();
   }, []);
 
-  const openPartyPage = (index: number) => {
-    router.push(`/party/${index}`);
+  const openPartyPage = (id: string) => {
+    router.push(`/party/${id}`);
   }
 
 
@@ -58,19 +58,19 @@ export default function TabOneScreen() {
         showsUserLocation
         initialRegion={region}
       >
-        {parties.map((party, index) => {
+        {parties.map((party) => {
           if (calculateDistance(region, party.location) > width / 1000) {
             return null;
           }
           return (
             <Marker
-              key={index}
+              key={party.id}
               coordinate={{ latitude: party.location.latitude, longitude: party.location.longitude }}
             >
               <Callout >
                 <TouchableOpacity
                   style={styles.partyPreviewContainer}
-                  onPress={() => openPartyPage(index)}
+                  onPress={() => openPartyPage(party.id)}
                 >
                   <Image
                     style={styles.partyPreviewImage}
