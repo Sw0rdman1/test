@@ -78,6 +78,7 @@ export default function TabOneScreen() {
           }
           return (
             <Marker
+              key={index}
               coordinate={{ latitude: party.latitude, longitude: party.longitude }}
             >
               <Callout>

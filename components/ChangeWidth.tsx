@@ -2,6 +2,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import { Text, View } from './Themed';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { tint } from '@/constants/Colors';
+import { useColors } from '@/hooks/useColors';
 
 interface ChangeWidthProps {
     width: number;
@@ -10,18 +11,19 @@ interface ChangeWidthProps {
 
 const ChangeWidth: React.FC<ChangeWidthProps> = ({ width, setWidth }) => {
     const { top } = useSafeAreaInsets();
+    const { background, text } = useColors();
     return (
-        <View style={[styles.changeWidthContainer, { marginTop: top }]}>
+        <View style={[styles.changeWidthContainer, { marginTop: top, shadowColor: text }]}>
             <TouchableOpacity
                 onPress={() => setWidth(width - 100)}
-                style={styles.button}
+                style={[styles.button, { backgroundColor: background, shadowColor: text }]}
             >
                 <Text style={styles.buttonText}>-</Text>
             </TouchableOpacity>
             <Text style={styles.width}>{width}m</Text>
             <TouchableOpacity
                 onPress={() => setWidth(width + 100)}
-                style={styles.button}
+                style={[styles.button, { backgroundColor: background, shadowColor: text }]}
             >
                 <Text style={styles.buttonText}>+</Text>
             </TouchableOpacity>
@@ -42,12 +44,10 @@ const styles = StyleSheet.create({
         padding: 10,
         zIndex: 1,
         borderRadius: 10,
-        shadowColor: 'black',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        backgroundColor: 'white',
     },
     button: {
         width: 25,
