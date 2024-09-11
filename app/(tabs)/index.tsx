@@ -1,5 +1,4 @@
-import { StyleSheet, TouchableOpacity } from 'react-native';
-import { Text, View } from '@/components/Themed';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import MapView, { Callout, Circle, Marker, Region } from 'react-native-maps';
 import { useEffect, useState } from 'react';
 import * as Location from 'expo-location';
@@ -7,26 +6,16 @@ import ChangeWidth from '@/components/ChangeWidth';
 import { tint } from '@/constants/Colors';
 import { calculateDistance } from '@/utils/location';
 import { router } from 'expo-router';
+import { useParties } from '@/hooks/useParties';
 
-const generateRandomLocationsWithin3km = (center: Region, count: number) => {
-  const locations = [];
-  for (let i = 0; i < count; i++) {
-    const angle = Math.random() * 2 * Math.PI;
-    const radius = Math.random() * 3000;
-    const latitude = center.latitude + radius * Math.cos(angle) / 111000;
-    const longitude = center.longitude + radius * Math.sin(angle) / 111000;
-    locations.push({ latitude, longitude } as Region);
-  }
-  return locations;
-}
+
 
 
 
 
 export default function TabOneScreen() {
   const [region, setRegion] = useState<Region | null>(null);
-  const [parties, setParties] = useState<Region[]>([]);
-  const [errorMsg, setErrorMsg] = useState('');
+  const parties = useParties(region);
   const [width, setWidth] = useState(1000);
 
   useEffect(() => {
@@ -34,7 +23,6 @@ export default function TabOneScreen() {
 
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
         return;
       }
 
@@ -48,8 +36,6 @@ export default function TabOneScreen() {
       };
 
       setRegion(region);
-      const parties = generateRandomLocationsWithin3km(region, 10);
-      setParties(parties);
 
     })();
   }, []);
@@ -73,17 +59,27 @@ export default function TabOneScreen() {
         initialRegion={region}
       >
         {parties.map((party, index) => {
-          if (calculateDistance(region, party) > width / 1000) {
+          if (calculateDistance(region, party.location) > width / 1000) {
             return null;
           }
           return (
             <Marker
               key={index}
-              coordinate={{ latitude: party.latitude, longitude: party.longitude }}
+              coordinate={{ latitude: party.location.latitude, longitude: party.location.longitude }}
             >
-              <Callout>
-                <TouchableOpacity onPress={() => openPartyPage(index)}>
-                  <Text>Party {index}</Text>
+              <Callout >
+                <TouchableOpacity
+                  style={styles.partyPreviewContainer}
+                  onPress={() => openPartyPage(index)}
+                >
+                  <Image
+                    style={styles.partyPreviewImage}
+                    source={{ uri: party.image }}
+                  />
+                  <View style={styles.partyPreviewTextContainer}>
+                    <Text style={styles.partyPreviewName}>{party.name}</Text>
+                    <Text style={styles.partyPreviewAdress}>{party.adress}</Text>
+                  </View>
                 </TouchableOpacity>
               </Callout>
             </Marker>
@@ -105,6 +101,22 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-
+  partyPreviewContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  partyPreviewImage: {
+    width: 50,
+    height: 50,
+  },
+  partyPreviewTextContainer: {
+    marginLeft: 10,
+  },
+  partyPreviewName: {
+    fontWeight: 'bold',
+  },
+  partyPreviewAdress: {
+    color: 'grey',
+  },
 
 });
