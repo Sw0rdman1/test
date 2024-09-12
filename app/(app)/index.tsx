@@ -10,10 +10,7 @@ import { useParties } from '@/hooks/useParties';
 
 
 
-
-
-
-export default function TabOneScreen() {
+export default function HomeScreen() {
   const [region, setRegion] = useState<Region | null>(null);
   const parties = useParties(region);
   const [width, setWidth] = useState(1000);
