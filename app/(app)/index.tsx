@@ -7,13 +7,14 @@ import { tint } from '@/constants/Colors';
 import { calculateDistance } from '@/utils/location';
 import { router } from 'expo-router';
 import { useParties } from '@/hooks/useParties';
+import BottomSheetDistance from '@/components/BottomSheet';
 
 
 
 export default function HomeScreen() {
   const [region, setRegion] = useState<Region | null>(null);
   const parties = useParties(region);
-  const [width, setWidth] = useState(1000);
+  const [width, setWidth] = useState(500);
 
   useEffect(() => {
     (async () => {
@@ -48,7 +49,6 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <ChangeWidth width={width} setWidth={setWidth} />
       <MapView
         style={StyleSheet.absoluteFillObject}
         showsMyLocationButton
@@ -90,6 +90,7 @@ export default function HomeScreen() {
           strokeColor={`${tint}90`}
         />
       </MapView>
+      <BottomSheetDistance width={width} setWidth={setWidth} />
     </View>
   );
 }
@@ -99,6 +100,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
+
   partyPreviewContainer: {
     flexDirection: 'row',
     alignItems: 'center',
