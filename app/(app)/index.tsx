@@ -7,6 +7,7 @@ import { router } from 'expo-router';
 import { useParties } from '@/hooks/useParties';
 import BottomSheetDistance from '@/components/BottomSheet';
 import { useCurrentLocation } from '@/hooks/useCurrentLocation';
+import { PartyPreview, PartyPreviewCallout } from '@/components/PartyPreview';
 
 
 
@@ -16,9 +17,7 @@ export default function HomeScreen() {
   const [width, setWidth] = useState(500);
 
 
-  const openPartyPage = (id: string) => {
-    router.push(`/party/${id}`);
-  }
+
 
   if (!currentLocation) {
     return (
@@ -42,24 +41,12 @@ export default function HomeScreen() {
           }
           return (
             <Marker
-              image={require('../../assets/images/mirror-ball.png')}
               key={party.id}
               coordinate={{ latitude: party.location.latitude, longitude: party.location.longitude }}
             >
-              <Callout >
-                <TouchableOpacity
-                  style={styles.partyPreviewContainer}
-                  onPress={() => openPartyPage(party.id)}
-                >
-                  <Image
-                    style={styles.partyPreviewImage}
-                    source={{ uri: party.image }}
-                  />
-                  <View style={styles.partyPreviewTextContainer}>
-                    <Text style={styles.partyPreviewName}>{party.name}</Text>
-                    <Text style={styles.partyPreviewAdress}>{party.adress}</Text>
-                  </View>
-                </TouchableOpacity>
+              <PartyPreview party={party} />
+              <Callout>
+                <PartyPreviewCallout party={party} />
               </Callout>
             </Marker>
           );
@@ -83,22 +70,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  partyPreviewContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  partyPreviewImage: {
-    width: 50,
-    height: 50,
-  },
-  partyPreviewTextContainer: {
-    marginLeft: 10,
-  },
-  partyPreviewName: {
-    fontWeight: 'bold',
-  },
-  partyPreviewAdress: {
-    color: 'grey',
-  },
 
 });
