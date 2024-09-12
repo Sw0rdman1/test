@@ -1,26 +1,27 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Dimensions, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { router } from 'expo-router'
 import { Party } from '@/hooks/useParties'
+import { Callout, Marker } from 'react-native-maps'
+
+const { width } = Dimensions.get('window')
 
 interface PartyPreviewProps {
     party: Party
+    isDisplayed?: boolean
 }
 
-const PartyPreview: React.FC<PartyPreviewProps> = ({ party }) => {
+const PartyPreviewMarker: React.FC<PartyPreviewProps> = ({ party }) => {
     return (
         <Image style={styles.partyPreviewImage} source={{ uri: party.image }} />
     )
 }
 
 const PartyPreviewCallout: React.FC<PartyPreviewProps> = ({ party }) => {
-    const openPartyPage = (id: string) => {
-        router.push(`/party/${id}`);
-    }
+
     return (
-        <TouchableOpacity
+        <View
             style={styles.partyPreviewContainer}
-            onPress={() => openPartyPage(party.id)}
         >
             <Image
                 style={styles.partyPreviewImageCallout}
@@ -30,11 +31,29 @@ const PartyPreviewCallout: React.FC<PartyPreviewProps> = ({ party }) => {
                 <Text style={styles.partyPreviewName}>{party.name}</Text>
                 <Text style={styles.partyPreviewAdress}>{party.adress}</Text>
             </View>
-        </TouchableOpacity>
+        </View>
     )
 }
 
-export { PartyPreview, PartyPreviewCallout }
+const PartyPreview: React.FC<PartyPreviewProps> = ({ party, isDisplayed }) => {
+    if (!isDisplayed) return null;
+
+    const openPartyPage = (id: string) => {
+        router.push(`/party/${id}`);
+    }
+    return (
+        <Marker
+            coordinate={{ latitude: party.location.latitude, longitude: party.location.longitude }}
+        >
+            <PartyPreviewMarker party={party} />
+            <Callout onPress={() => openPartyPage(party.id)}>
+                <PartyPreviewCallout party={party} />
+            </Callout>
+        </Marker>
+    )
+}
+
+export default PartyPreview
 
 const styles = StyleSheet.create({
     partyPreviewImage: {
@@ -45,7 +64,7 @@ const styles = StyleSheet.create({
     partyPreviewContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingHorizontal: 10,
+        backgroundColor: 'white',
     },
     partyPreviewImageCallout: {
         width: 50,

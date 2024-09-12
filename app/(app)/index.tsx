@@ -7,7 +7,7 @@ import { router } from 'expo-router';
 import { useParties } from '@/hooks/useParties';
 import BottomSheetDistance from '@/components/BottomSheet';
 import { useCurrentLocation } from '@/hooks/useCurrentLocation';
-import { PartyPreview, PartyPreviewCallout } from '@/components/PartyPreview';
+import PartyPreview from '@/components/PartyPreview';
 
 
 
@@ -35,22 +35,13 @@ export default function HomeScreen() {
         showsUserLocation
         initialRegion={currentLocation}
       >
-        {parties.map((party) => {
-          if (calculateDistance(currentLocation, party.location) > width / 1000) {
-            return null;
-          }
-          return (
-            <Marker
-              key={party.id}
-              coordinate={{ latitude: party.location.latitude, longitude: party.location.longitude }}
-            >
-              <PartyPreview party={party} />
-              <Callout>
-                <PartyPreviewCallout party={party} />
-              </Callout>
-            </Marker>
-          );
-        })}
+        {parties.map((party) => (
+          <PartyPreview
+            key={party.id}
+            party={party}
+            isDisplayed={calculateDistance(currentLocation, party.location) < width / 1000}
+          />
+        ))}
         <Circle
           center={{ latitude: currentLocation.latitude, longitude: currentLocation.longitude }}
           radius={width}
@@ -66,8 +57,9 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    position: 'relative',
+    left: 0,
+    top: 0
   },
 
 
