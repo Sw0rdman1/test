@@ -61,6 +61,7 @@ export default function HomeScreen() {
           }
           return (
             <Marker
+              image={require('../../assets/images/mirror-ball.png')}
               key={party.id}
               coordinate={{ latitude: party.location.latitude, longitude: party.location.longitude }}
             >
