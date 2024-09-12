@@ -37,6 +37,9 @@ const BottomSheetDistance: React.FC<BottomSheetDistanceProps> = ({ width, setWid
                     minimumTrackTintColor={tint}
                     maximumTrackTintColor='lightgray'
                 />
+                <Text style={styles.widthText}>
+                    {width} m
+                </Text>
             </BottomSheetView>
         </BottomSheet>
     );
@@ -51,6 +54,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 20,
+    },
+    widthText: {
+        fontSize: 18,
+        marginTop: 10,
     },
 });
 
